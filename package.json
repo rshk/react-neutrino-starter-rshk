@@ -10,15 +10,30 @@
     "test": "neutrino test"
   },
   "dependencies": {
+    "bootstrap": "^4.1.1",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-hot-loader": "^4.3.3"
+    "react-helmet": "^5.2.0",
+    "react-hot-loader": "^4.3.3",
+    "react-router-dom": "^4.3.1"
   },
   "devDependencies": {
+    "@neutrinojs/copy": "^8.3.0",
+    "@neutrinojs/eslint": "^8.3.0",
     "@neutrinojs/jest": "^8.3.0",
     "@neutrinojs/react": "^8.3.0",
     "@neutrinojs/standardjs": "^8.3.0",
-    "neutrino": "^8.3.0"
+    "@neutrinojs/style-loader": "^8.3.0",
+    "autoprefixer": "^8.6.4",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.34.1",
+    "eslint-plugin-import": "^2.6.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0",
+    "neutrino": "^8.3.0",
+    "node-sass": "^4.9.0",
+    "postcss-loader": "^2.1.5",
+    "sass-loader": "^7.0.3"
   }
 }
