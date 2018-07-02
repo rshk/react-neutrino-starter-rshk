@@ -76,14 +76,14 @@ const link = split(
     // split based on operation type
     ({ query }) => {
         const {kind, operation} = getMainDefinition(query);
-        console.log('SPLIT LINK', kind, operation);
+        // console.log('SPLIT LINK', kind, operation);
         return kind === 'OperationDefinition' && operation === 'subscription';
     },
     wsLink,
     ApolloLink.from([
         onErrorLink,
-        httpLink,
         authLink,
+        httpLink,
     ]),
 );
 

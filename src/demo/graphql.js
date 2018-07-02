@@ -78,6 +78,14 @@ const MESSAGES_SUBS = gql`
     }
 `;
 
+const POST_MESSAGE = gql`
+    mutation postMessage($channel: String!, $text: String!) {
+        postMessage(channel: $channel, text: $text) {
+            ok
+        }
+    }
+`;
+
 
 const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
     constructor(...args) {
@@ -97,11 +105,11 @@ const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
                 const {subscriptionData: {data: {message}}} = newData;
 
                 // Merge new message to collection
-                const {messages, ...extra} = prev;
+                const {messages = {}, ...extra} = prev;
                 return {
                     messages: {
                         ...messages,
-                        edges: [...messages.edges, message].slice(-10),
+                        edges: [...(messages.edges || []), message].slice(-10),
                     },
                     ...extra,
                 }
@@ -130,6 +138,14 @@ const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
             <ul>
                 {messages.edges.map(({text}, idx) => <li key={idx}>{text}</li>)}
             </ul>
+            <MessageForm />
         </div>;
     }
 })
+
+
+const MessageForm = graphql(POST_MESSAGE, {name: 'postMessage'})(({postMessage}) => {
+    return <div>
+        <button type="button" onClick={()=>postMessage({variables:{channel:'hello',text:'TEST MESSAGE FROM JS'}}) }>CLICKME</button>
+    </div>;
+});
