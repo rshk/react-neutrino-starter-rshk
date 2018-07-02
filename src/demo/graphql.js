@@ -86,7 +86,7 @@ const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
     }
 
     componentDidMount() {
-        console.log('DIDMOUNT', this.props);
+        // console.log('DIDMOUNT', this.props);
         this._subscription = this.props.data.subscribeToMore({
             document: MESSAGES_SUBS,
             variables: {channel: this.props.channel},
@@ -101,7 +101,7 @@ const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
                 return {
                     messages: {
                         ...messages,
-                        edges: [...messages.edges, message],
+                        edges: [...messages.edges, message].slice(-10),
                     },
                     ...extra,
                 }
