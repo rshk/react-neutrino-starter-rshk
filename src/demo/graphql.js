@@ -7,6 +7,9 @@ export default function GraphQLDemo() {
     return <div>
         <h2>GraphQL component</h2>
         <GraphQLHelloWrapper />
+
+        <h2>GraphQL chat</h2>
+        <GraphQLChat channel="hello" />
     </div>;
 }
 
@@ -39,7 +42,6 @@ const QUERY = gql`
 
 
 const HelloGQL = graphql(QUERY)((props) => {
-    console.log('PROPS', props);
     const {data: {hello, error, loading}} = props;
 
     if (error) {
@@ -56,3 +58,78 @@ const HelloGQL = graphql(QUERY)((props) => {
 
     return <div className="alert alert-success">{hello}</div>;
 });
+
+
+const MESSAGES_QUERY = gql`
+    query Messages($channel: String!) {
+        messages(channel: $channel) {
+            edges {
+                text
+            }
+        }
+    }
+`;
+
+const MESSAGES_SUBS = gql`
+    subscription Message($channel: String!) {
+        message: messages(channel: $channel) {
+            text
+        }
+    }
+`;
+
+
+const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
+    constructor(...args) {
+        super(...args);
+        this.state = {};
+    }
+
+    componentDidMount() {
+        console.log('DIDMOUNT', this.props);
+        this._subscription = this.props.data.subscribeToMore({
+            document: MESSAGES_SUBS,
+            variables: {channel: this.props.channel},
+            updateQuery: (prev={}, newData) => {
+
+                // console.log('===> UPDATE', prev, newData);
+
+                const {subscriptionData: {data: {message}}} = newData;
+
+                // Merge new message to collection
+                const {messages, ...extra} = prev;
+                return {
+                    messages: {
+                        ...messages,
+                        edges: [...messages.edges, message],
+                    },
+                    ...extra,
+                }
+
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        this._subscription(); // Unsubscribe...
+    }
+
+    render() {
+        // console.log('PROPS', this.props);
+        const {data: {loading, error, messages}} = this.props;
+
+        if (error) {
+            return <div>Error: {error.message}</div>;
+        }
+
+        if (loading || !messages) {
+            return <div>Loading...</div>;
+        }
+
+        return <div>
+            <ul>
+                {messages.edges.map(({text}, idx) => <li key={idx}>{text}</li>)}
+            </ul>
+        </div>;
+    }
+})

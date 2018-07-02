@@ -5,12 +5,16 @@ import {ApolloLink} from 'apollo-link';
 import {createUploadLink} from 'apollo-upload-client';
 import {createHttpLink} from 'apollo-link-http';
 import {setContext} from 'apollo-link-context';
+import {split} from 'apollo-link';
+import {WebSocketLink} from 'apollo-link-ws';
+import {getMainDefinition} from 'apollo-utilities';
 
 import {doLogout, getToken} from './auth';
 
 
 // TODO load from process.env.API_URL or similar
 const API_URL = process.env.API_URL || 'https://graphqlbin.org/graphql';
+const WEBSOCKET_URL = API_URL.replace(/^http(s?):\/\/(.*)/, 'ws$1://$2');
 
 const ENABLE_UPLOADS = true;
 
@@ -58,14 +62,34 @@ const authLink = setContext((_, {headers: extraHeaders}) => {
 });
 
 
-const client = new ApolloClient({
-    link: ApolloLink.from([
+const wsLink = new WebSocketLink({
+    uri: WEBSOCKET_URL,
+    options: {
+        reconnect: true
+    }
+});
+
+
+// using the ability to split links, you can send data to each link
+// depending on what kind of operation is being sent
+const link = split(
+    // split based on operation type
+    ({ query }) => {
+        const {kind, operation} = getMainDefinition(query);
+        console.log('SPLIT LINK', kind, operation);
+        return kind === 'OperationDefinition' && operation === 'subscription';
+    },
+    wsLink,
+    ApolloLink.from([
         onErrorLink,
         httpLink,
         authLink,
     ]),
-    cache: new InMemoryCache()
-});
+);
 
+
+const cache = new InMemoryCache();
+
+const client = new ApolloClient({link, cache});
 
 export default client;
