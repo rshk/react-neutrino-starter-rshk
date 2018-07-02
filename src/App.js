@@ -1,4 +1,7 @@
 import React from 'react';
+
+import GraphQLDemo from 'demo/graphql';
+
 import styles from './App.scss';
 
 
@@ -18,6 +21,7 @@ export default class App extends React.Component {
             <button type="button" className="btn btn-primary">
                 Themed button
             </button>
+            <GraphQLDemo />
         </div>
     )
   }

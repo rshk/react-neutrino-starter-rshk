@@ -53,16 +53,24 @@ module.exports = {
                 }
             ]
         }],
+
+        // Resolve modules from ./src folder, to allow
+        // absolute imports
         (neutrino) => {
             neutrino.config.resolve
                     .modules
                     .add(neutrino.options.source);
         },
+
+        // Copy static files over
         ['@neutrinojs/copy', {
             patterns: [
                 {from: './src/static', to: './'},
             ],
             options: {},
             pluginId: 'copy'}],
+
+        // Load env vars and pass them to client-side js
+        ['@neutrinojs/env', ['API_URL']],
     ]
 };
