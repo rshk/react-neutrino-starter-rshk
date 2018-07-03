@@ -1,6 +1,7 @@
 import React from 'react';
 import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
+import styles from './graphql.scss';
 
 
 export default function GraphQLDemo() {
@@ -87,10 +88,10 @@ const POST_MESSAGE = gql`
 `;
 
 
-const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
+class GraphQLChatUI extends React.Component {
     constructor(...args) {
         super(...args);
-        this.state = {};
+        this.state = {text: ''};
     }
 
     componentDidMount() {
@@ -134,18 +135,50 @@ const GraphQLChat = graphql(MESSAGES_QUERY)(class extends React.Component {
             return <div>Loading...</div>;
         }
 
-        return <div>
-            <ul>
-                {messages.edges.map(({text}, idx) => <li key={idx}>{text}</li>)}
-            </ul>
-            <MessageForm />
+        return <div className={styles.chat}>
+            {this._renderMessages(messages)}
+            {this._renderInput()}
         </div>;
     }
-})
+
+    _renderMessages(messages) {
+        const _refFunc = (el) => {
+            if (!el) {
+                return;
+            }
+            // console.log('ELEM', el, el.scrollTop, el.scrollHeight - el.clientHeight);
+            el.scrollTo(0, el.scrollHeight);
+        };
+        return <div className={styles.chat__messages} ref={_refFunc}>
+            {messages.edges.map(({text}, idx) =>
+                <div key={idx} className={styles.chat__messages__item}>
+                    {text}
+                </div>)}
+        </div>
+    }
+
+    _renderInput() {
+        return <form className={styles.chat__input_form} onSubmit={this._submit.bind(this)}>
+            <input type="text"
+                   className={styles.chat__input_field}
+                   value={this.state.text}
+                   onChange={evt => this.setState({text: evt.target.value})} />
+            <button type="submit">Send</button>
+        </form>;
+    }
+
+    _submit(evt) {
+        evt.preventDefault();
+        console.log('Message', this.state.text);
+        const {postMessage} = this.props;
+        const {text} = this.state;
+        postMessage({variables: {channel: 'hello', text}});
+        this.setState({text: ''});
+    }
+}
 
 
-const MessageForm = graphql(POST_MESSAGE, {name: 'postMessage'})(({postMessage}) => {
-    return <div>
-        <button type="button" onClick={()=>postMessage({variables:{channel:'hello',text:'TEST MESSAGE FROM JS'}}) }>CLICKME</button>
-    </div>;
-});
+
+const GraphQLChat = (
+    graphql(MESSAGES_QUERY)(
+        graphql(POST_MESSAGE, {name: 'postMessage'})(GraphQLChatUI)))
