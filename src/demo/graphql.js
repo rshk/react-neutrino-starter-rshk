@@ -30,7 +30,7 @@ class GraphQLHelloWrapper extends React.Component {
                        value={this.state.name} />
             </div>
             <HelloGQL name={this.state.name || null} />
-        </div>
+        </div>;
     }
 }
 
@@ -54,7 +54,7 @@ const HelloGQL = graphql(QUERY)((props) => {
     if (loading) {
         return <div className="alert alert-info">
             Loading...
-        </div>
+        </div>;
     }
 
     return <div className="alert alert-success">{hello}</div>;
@@ -113,7 +113,7 @@ class GraphQLChatUI extends React.Component {
                         edges: [...(messages.edges || []), message].slice(-10),
                     },
                     ...extra,
-                }
+                };
 
             }
         });
@@ -154,7 +154,7 @@ class GraphQLChatUI extends React.Component {
                 <div key={idx} className={styles.chat__messages__item}>
                     {text}
                 </div>)}
-        </div>
+        </div>;
     }
 
     _renderInput() {
@@ -181,4 +181,4 @@ class GraphQLChatUI extends React.Component {
 
 const GraphQLChat = (
     graphql(MESSAGES_QUERY)(
-        graphql(POST_MESSAGE, {name: 'postMessage'})(GraphQLChatUI)))
+        graphql(POST_MESSAGE, {name: 'postMessage'})(GraphQLChatUI)));

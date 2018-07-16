@@ -8,18 +8,18 @@ import App from './App';
 import './index.global.scss';
 
 
-const root = document.getElementById('root')
+const root = document.getElementById('root');
 const load = () => render((
     <AppContainer>
         <ApolloProvider>
             <App />
         </ApolloProvider>
     </AppContainer>
-), root)
+), root);
 
 // This is needed for Hot Module Replacement
 if (module.hot) {
-    module.hot.accept('./App', load)
+    module.hot.accept('./App', load);
 }
 
-load()
+load();
