@@ -3,6 +3,13 @@
 Basic configuration for starting [React](https://reactjs.org/)
 projects based on [Neutrino](https://neutrinojs.org/).
 
+## Quick project setup
+
+**WARNING:** always double-check before running untrusted code from the internet!
+
+```
+curl 'https://raw.githubusercontent.com/rshk/react-neutrino-starter-rshk/master/bin/create' | bash -s - new-project-name
+```
 
 ## Customizations summary
 
