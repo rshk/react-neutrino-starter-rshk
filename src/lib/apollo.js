@@ -11,12 +11,16 @@ import {getMainDefinition} from 'apollo-utilities';
 
 import {doLogout, getToken} from './auth';
 
-
-// TODO load from process.env.API_URL or similar
-const API_URL = process.env.API_URL || 'https://graphqlbin.org/graphql';
-const WEBSOCKET_URL = API_URL.replace(/^http(s?):\/\/(.*)/, 'ws$1://$2');
-
 const ENABLE_UPLOADS = true;
+
+
+const API_URL = process.env.API_URL || 'https://graphqlbin.org/graphql';
+
+const _wsURLFromAPI = (api_url) =>
+    api_url.replace(/^http(s?):\/\/(.*)/, 'ws$1://$2')
+           .replace(/\/graphql$/, '/subscriptions');  // HACK
+
+const WEBSOCKET_URL = process.env.WEBSOCKET_URL || _wsURLFromAPI(API_URL);
 
 
 const onErrorLink = onError(({graphQLErrors, networkError}) => {
@@ -65,7 +69,10 @@ const authLink = setContext((_, {headers: extraHeaders}) => {
 const wsLink = new WebSocketLink({
     uri: WEBSOCKET_URL,
     options: {
-        reconnect: true
+        reconnect: true,
+        connectionParams: {
+            authToken: getToken(),
+        },
     }
 });
 
