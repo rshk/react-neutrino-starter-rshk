@@ -1,0 +1,19 @@
+#!/bin/bash
+
+NAME="$1"
+
+if [ -z "$NAME" ]; then
+    echo "Usage: ./create <project-name>"
+    exit 1
+fi
+
+REPO=https://github.com/rshk/react-neutrino-starter-rshk
+
+
+git clone "$REPO" "$NAME"
+cd "$NAME"
+RSR_VERSION="$(git describe --tags --long)"
+rm -rf .git
+git init
+git add -A
+git commit -m "Initial commit, based on react-neutrino-starter-rshk ${RSR_VERSION}"
