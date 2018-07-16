@@ -4,21 +4,17 @@ module.exports = {
         ['@neutrinojs/react', {
             devServer: {
                 host: '127.0.0.1',
-                port: 3000,
+                port: process.env.PORT || 3000,
                 https: false,
             },
             html: {
                 title: 'react-neutrino-starter-rshk'
             }
         }],
+        (neutrino)=> {
+            neutrino.config.output.publicPath("/");
+        },
         '@neutrinojs/jest',
-        ['@neutrinojs/eslint', {
-            eslint: {
-                plugins: ['import', 'flowtype', 'jsx-a11y', 'react'],
-                rules: {},
-                baseConfig: {extends: ['eslint-config-react-app']},
-            },
-        }],
         ['@neutrinojs/style-loader', {
             test: /\.global\.(css|sass|scss)$/,
             modulesTest: /(?<!\.global)\.(css|sass|scss)$/,
@@ -72,5 +68,16 @@ module.exports = {
 
         // Load env vars and pass them to client-side js
         ['@neutrinojs/env', ['API_URL']],
+
+        // Configure eslint
+        ['@neutrinojs/eslint', {
+            eslint: {
+                baseConfig: {extends: ['eslint-config-react-app']},
+                plugins: ['import', 'flowtype', 'jsx-a11y', 'react'],
+                rules: {
+                    semi: ['error', 'always'],
+                },
+            },
+        }],
     ]
 };

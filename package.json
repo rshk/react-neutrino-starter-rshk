@@ -2,7 +2,8 @@
   "name": "react-neutrino-starter-rshk",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT",
+  "license": "UNLICENSED",
+  "private": true,
   "scripts": {
     "build": "neutrino build",
     "start": "neutrino start",
