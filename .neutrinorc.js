@@ -67,7 +67,7 @@ module.exports = {
             pluginId: 'copy'}],
 
         // Load env vars and pass them to client-side js
-        ['@neutrinojs/env', ['API_URL']],
+        ['@neutrinojs/env', ['API_URL', 'WEBSOCKET_URL']],
 
         // Configure eslint
         ['@neutrinojs/eslint', {
